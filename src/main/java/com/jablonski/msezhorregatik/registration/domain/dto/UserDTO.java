@@ -1,12 +1,12 @@
 package com.jablonski.msezhorregatik.registration.domain.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.UUID;
 
-@Data
 @Builder
+@Getter
 public class UserDTO {
 
     private UUID id;

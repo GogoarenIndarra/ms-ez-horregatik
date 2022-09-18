@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ExceptionEnum {
-
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     USER_EXISTS(HttpStatus.CONFLICT, "User already exists");
 

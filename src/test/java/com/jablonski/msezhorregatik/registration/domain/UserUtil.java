@@ -1,4 +1,4 @@
-package com.jablonski.msezhorregatik.registration;
+package com.jablonski.msezhorregatik.registration.domain;
 
 import com.jablonski.msezhorregatik.registration.domain.dto.UserDTO;
 

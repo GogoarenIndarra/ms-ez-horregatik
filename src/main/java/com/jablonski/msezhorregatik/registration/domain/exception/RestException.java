@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class RestException extends RuntimeException {
-
     private final ExceptionEnum exceptionEnum;
 
     public RestException(ExceptionEnum exceptionEnum) {
