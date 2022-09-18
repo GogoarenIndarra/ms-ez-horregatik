@@ -1,0 +1,24 @@
+server:
+  port: 8090
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/horregatik
+    username: postgres
+    password: postgres
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 300000
+      maxLifetime: 600000
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  main:
+    allow-bean-definition-overriding: true
+
+encrypt:
+  password: p@ssw0rd
+  salt: 3718E8CF
