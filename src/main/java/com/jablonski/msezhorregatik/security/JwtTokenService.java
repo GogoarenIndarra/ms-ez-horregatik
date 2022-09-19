@@ -4,12 +4,8 @@ import com.jablonski.msezhorregatik.security.dto.JwtRequest;
 import com.jablonski.msezhorregatik.security.dto.JwtResponse;
 import com.jablonski.msezhorregatik.security.dto.TokenRefreshRequest;
 
-public class JwtTokenService {
-    public JwtResponse createToken(JwtRequest authenticationRequest) {
-        return new JwtResponse();
-    }
+interface JwtTokenService {
+    JwtResponse createToken(JwtRequest authenticationRequest);
 
-    public JwtResponse refreshToken(TokenRefreshRequest request) {
-        return new JwtResponse();
-    }
+    JwtResponse refreshToken(TokenRefreshRequest token);
 }

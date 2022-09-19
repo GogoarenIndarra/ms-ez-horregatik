@@ -25,4 +25,5 @@ encrypt:
 
 jwt:
   secret: ms_ez_horregatik
-  tokenValidity: 900
+  tokenValidity: 6
+  refreshTokenValidity: 9

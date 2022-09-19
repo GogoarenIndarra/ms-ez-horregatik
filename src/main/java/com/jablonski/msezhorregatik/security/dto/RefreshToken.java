@@ -1,51 +1,54 @@
 package com.jablonski.msezhorregatik.security.dto;
 
 import com.jablonski.msezhorregatik.registration.domain.dto.User;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.time.Instant;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity(name = "REFRESH_TOKEN")
+@Entity(name = "refresh_token")
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
 
-    @Column(name = "TOKEN")
+    @Column(name = "token")
     private String token;
 
-    @Column(name = "EXPIRY_DATE")
-    private Instant expiryDate;
+    @Column(name = "expiry_date")
+    private LocalDateTime expiryDate;
 
     @OneToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof final RefreshToken refreshToken)) {
-            return false;
-        }
-        return Objects.equals(id, refreshToken.id)
-                && Objects.equals(token, refreshToken.token)
-                && Objects.equals(expiryDate, refreshToken.expiryDate);
+        if (this == o) return true;
+        if (!(o instanceof final RefreshToken refreshToken)) return false;
+        return Objects.equals(id, refreshToken.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, token, expiryDate);
+        return Objects.hash(id);
     }
 }

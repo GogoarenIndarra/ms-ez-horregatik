@@ -30,4 +30,21 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
         </createIndex>
     </changeSet>
 
+    <changeSet id="create-token" author="p.jablonski">
+        <createTable tableName="refresh_token" schemaName="public">
+            <column name="id" type="uuid">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="token" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="expiry_date" type="datetime" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

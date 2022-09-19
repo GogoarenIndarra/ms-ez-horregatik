@@ -19,7 +19,7 @@ public class UserFacade {
         return userService.getUser(userId);
     }
 
-    public void updateUser(final UUID userId, final UserDTO userDTO){
+    public void updateUser(final UUID userId, final UserDTO userDTO) {
         userService.updateUser(userId, userDTO);
     }
 }

@@ -11,25 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class AutoController {
+class AuthController {
     private final JwtTokenService jwtTokenService;
 
-
     @PostMapping("/authenticate")
-    public ResponseEntity<JwtResponse> createToken(@RequestBody final JwtRequest request) {
-
+    ResponseEntity<JwtResponse> createToken(@RequestBody final JwtRequest request) {
         return ResponseEntity.ok(jwtTokenService.createToken(request));
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<JwtResponse> refreshToken(@RequestBody final TokenRefreshRequest request) {
-
+    ResponseEntity<JwtResponse> refreshToken(@RequestBody final TokenRefreshRequest request) {
         return ResponseEntity.ok(jwtTokenService.refreshToken(request));
-    }
-
-    @PostMapping("/logOut")
-    public ResponseEntity<?> logOut() {
-        // TODO to implement later
-        return ResponseEntity.ok(null);
     }
 }
