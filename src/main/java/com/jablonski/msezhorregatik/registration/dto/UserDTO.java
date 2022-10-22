@@ -1,4 +1,4 @@
-package com.jablonski.msezhorregatik.registration.domain.dto;
+package com.jablonski.msezhorregatik.registration.dto;
 
 import lombok.Builder;
 import lombok.Getter;

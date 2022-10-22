@@ -1,6 +1,6 @@
 package com.jablonski.msezhorregatik.security.dto;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.User;
+import com.jablonski.msezhorregatik.registration.dto.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -17,8 +17,6 @@ import java.util.UUID;
 
 @Entity(name = "refresh_token")
 @Getter
-@Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

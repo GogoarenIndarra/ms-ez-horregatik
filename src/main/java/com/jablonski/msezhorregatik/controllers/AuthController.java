@@ -1,8 +1,9 @@
-package com.jablonski.msezhorregatik.security;
+package com.jablonski.msezhorregatik.controllers;
 
+import com.jablonski.msezhorregatik.security.JwtTokenService;
 import com.jablonski.msezhorregatik.security.dto.JwtRequest;
 import com.jablonski.msezhorregatik.security.dto.JwtResponse;
-import com.jablonski.msezhorregatik.security.dto.TokenRefreshRequest;
+import com.jablonski.msezhorregatik.security.dto.RefreshTokenRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    ResponseEntity<JwtResponse> refreshToken(@RequestBody final TokenRefreshRequest request) {
+    ResponseEntity<JwtResponse> refreshToken(@RequestBody final RefreshTokenRequest request) {
         return ResponseEntity.ok(jwtTokenService.refreshToken(request));
     }
 }

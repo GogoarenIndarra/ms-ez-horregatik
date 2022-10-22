@@ -1,6 +1,6 @@
-package com.jablonski.msezhorregatik.registration.domain;
+package com.jablonski.msezhorregatik.registration;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.UserDTO;
+import com.jablonski.msezhorregatik.registration.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

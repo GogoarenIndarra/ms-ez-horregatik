@@ -1,6 +1,7 @@
-package com.jablonski.msezhorregatik.registration.domain.dto;
+package com.jablonski.msezhorregatik.registration.dto;
 
-import com.jablonski.msezhorregatik.infrastructure.EncryptedValueConverter;
+import com.jablonski.msezhorregatik.infrastructure.ValidEmail;
+import com.jablonski.msezhorregatik.infrastructure.ValidPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -33,7 +33,7 @@ import java.util.UUID;
         indexes = {@Index(name = "users_email_idx", columnList = "email")}
 )
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class})
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -49,11 +49,12 @@ public class User {
     private UUID id;
 
     @Email
+    @ValidEmail
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @ValidPassword
     @Column(name = "password")
-    @Convert(converter = EncryptedValueConverter.class)
     private String password;
 
     @Enumerated(EnumType.STRING)

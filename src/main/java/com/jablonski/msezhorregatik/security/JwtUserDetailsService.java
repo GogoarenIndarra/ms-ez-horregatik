@@ -1,8 +1,8 @@
 package com.jablonski.msezhorregatik.security;
 
-import com.jablonski.msezhorregatik.registration.domain.UserRepository;
-import com.jablonski.msezhorregatik.registration.domain.exception.ExceptionEnum;
-import com.jablonski.msezhorregatik.registration.domain.exception.RestException;
+import com.jablonski.msezhorregatik.registration.UserRepository;
+import com.jablonski.msezhorregatik.exception.ExceptionEnum;
+import com.jablonski.msezhorregatik.exception.RestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +32,7 @@ class JwtUserDetailsService implements UserDetailsService {
         return new User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 
-    public com.jablonski.msezhorregatik.registration.domain.dto.User loadByUserEmail(final String userEmail) throws RestException {
+    public com.jablonski.msezhorregatik.registration.dto.User loadByUserEmail(final String userEmail) throws RestException {
 
         return userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new RestException(ExceptionEnum.USER_NOT_FOUND));

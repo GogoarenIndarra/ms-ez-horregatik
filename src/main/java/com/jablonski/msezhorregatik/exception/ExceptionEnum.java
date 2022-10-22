@@ -1,4 +1,4 @@
-package com.jablonski.msezhorregatik.registration.domain.exception;
+package com.jablonski.msezhorregatik.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.jablonski.msezhorregatik.registration.domain;
+package com.jablonski.msezhorregatik.registration;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.User;
+import com.jablonski.msezhorregatik.registration.dto.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

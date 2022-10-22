@@ -1,13 +1,14 @@
-package com.jablonski.msezhorregatik.registration.domain;
+package com.jablonski.msezhorregatik.registration;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.State;
-import com.jablonski.msezhorregatik.registration.domain.dto.User;
-import com.jablonski.msezhorregatik.registration.domain.dto.UserDTO;
-import com.jablonski.msezhorregatik.registration.domain.exception.ExceptionEnum;
-import com.jablonski.msezhorregatik.registration.domain.exception.RestException;
+import com.jablonski.msezhorregatik.registration.dto.State;
+import com.jablonski.msezhorregatik.registration.dto.User;
+import com.jablonski.msezhorregatik.registration.dto.UserDTO;
+import com.jablonski.msezhorregatik.exception.ExceptionEnum;
+import com.jablonski.msezhorregatik.exception.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -18,13 +19,16 @@ import java.util.UUID;
 class UserService {
     private final UserRepository repository;
     private final UserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     private static final String USER_NOT_FOUND_FOR_ID_LOG = "User not found for id: {}";
     private static final String USER_ALREADY_EXISTS_FOR_EMAIL_LOG = "User already exists for email: {}";
 
     UUID createUser(final UserDTO userDTO) {
         try {
-            return repository.save(mapper.toUser(userDTO, State.ACTIVE)).getId();
+            final User user = mapper.toUser(userDTO, State.ACTIVE);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return repository.save(user).getId();
         } catch (DataIntegrityViolationException e) {
             log.error(USER_ALREADY_EXISTS_FOR_EMAIL_LOG, userDTO.getEmail());
             throw new RestException(ExceptionEnum.USER_EXISTS);
@@ -48,8 +52,10 @@ class UserService {
                     log.error(USER_NOT_FOUND_FOR_ID_LOG, userId);
                     throw new RestException(ExceptionEnum.USER_NOT_FOUND);
                 });
+
         mapper.updateUser(user, userDTO, State.ACTIVE);
         try {
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             repository.save(user);
             log.info("User {} updated successfully", userId);
         } catch (DataIntegrityViolationException e) {
