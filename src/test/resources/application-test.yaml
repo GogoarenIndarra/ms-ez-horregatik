@@ -1,0 +1,23 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db
+    password: postgres
+    username: postgres
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+encrypt:
+  password: p@ssw0rd
+  salt: 3718E8CF
+
+jwt:
+  secret: ms_ez_horregatik
+  tokenValidity: 6
+  refreshTokenValidity: 9
