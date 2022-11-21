@@ -1,8 +1,8 @@
-package com.jablonski.msezhorregatik.registration.domain;
+package com.jablonski.msezhorregatik.registration;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.State;
-import com.jablonski.msezhorregatik.registration.domain.dto.User;
-import com.jablonski.msezhorregatik.registration.domain.dto.UserDTO;
+import com.jablonski.msezhorregatik.registration.dto.State;
+import com.jablonski.msezhorregatik.registration.dto.User;
+import com.jablonski.msezhorregatik.registration.dto.UserDTO;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

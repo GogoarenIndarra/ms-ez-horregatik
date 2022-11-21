@@ -22,3 +22,8 @@ spring:
 encrypt:
   password: p@ssw0rd
   salt: 3718E8CF
+
+jwt:
+  secret: ms_ez_horregatik
+  tokenValidity: 6
+  refreshTokenValidity: 9

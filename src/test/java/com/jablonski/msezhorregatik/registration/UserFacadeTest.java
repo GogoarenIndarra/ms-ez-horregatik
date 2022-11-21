@@ -1,21 +1,38 @@
-package com.jablonski.msezhorregatik.registration.domain;
+package com.jablonski.msezhorregatik.registration;
 
-import com.jablonski.msezhorregatik.registration.domain.dto.State;
-import com.jablonski.msezhorregatik.registration.domain.dto.UserDTO;
-import com.jablonski.msezhorregatik.registration.domain.exception.ExceptionEnum;
-import com.jablonski.msezhorregatik.registration.domain.exception.RestException;
+import com.jablonski.msezhorregatik.UserTestRepository;
+import com.jablonski.msezhorregatik.UserUtil;
+import com.jablonski.msezhorregatik.registration.dto.State;
+import com.jablonski.msezhorregatik.registration.dto.User;
+import com.jablonski.msezhorregatik.registration.dto.UserDTO;
+import com.jablonski.msezhorregatik.exception.ExceptionEnum;
+import com.jablonski.msezhorregatik.exception.RestException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 class UserFacadeTest {
-    private final UserRepository repository = new InMemoryUserRepository();
-    private final UserMapper mapper = new UserMapperImpl();
-    private final UserFacade facade = new UserFacade(new UserService(repository, mapper));
+    private UserRepository repository;
+    private UserMapper mapper;
+    private PasswordEncoder passwordEncoder;
+    private UserFacade facade;
+
+    @BeforeEach
+    void setUp() {
+        mapper = new UserMapperImpl();
+        repository = new UserTestRepository();
+        passwordEncoder = new BCryptPasswordEncoder();
+        facade = new UserFacade(new UserService(repository, mapper, passwordEncoder));
+    }
 
     @Test
     void createUserTest_returnUserId() {
@@ -26,7 +43,7 @@ class UserFacadeTest {
         facade.createUser(userDTO);
 
         //then
-        assertThat(repository.findAll()).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(repository.findAll()).hasSize(1);
     }
 
     @Test
@@ -47,14 +64,14 @@ class UserFacadeTest {
     void getUserTest_returnUserDto() {
         //given
         final UserDTO userDTO = UserUtil.mockUserDTO(new HashMap<>());
-        repository.save(mapper.toUser(userDTO, State.ACTIVE));
-        final var userId = userDTO.getId();
+        final User user = repository.save(mapper.toUser(userDTO, State.ACTIVE));
+        final UUID userId = user.getId();
 
         //when
-        final var user = facade.getUser(userId);
+        final UserDTO foundedUser = facade.getUser(userId);
 
         //then
-        assertThat(user.getEmail()).isEqualTo(userDTO.getEmail());
+        assertThat(foundedUser.getEmail()).isEqualTo(userDTO.getEmail());
     }
 
     @Test
@@ -62,7 +79,7 @@ class UserFacadeTest {
         //given
         final UserDTO userDTO = UserUtil.mockUserDTO(new HashMap<>());
         repository.save(mapper.toUser(userDTO, State.ACTIVE));
-        final var userId = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
@@ -76,18 +93,24 @@ class UserFacadeTest {
     void updateUserTest_shouldUpdateUser() {
         //given
         final UserDTO userDTOFirst = UserUtil.mockUserDTO(new HashMap<>());
+        final User userFirst = repository.save(mapper.toUser(userDTOFirst, State.ACTIVE));
         final UserDTO userDTOSecond = UserUtil.mockUserDTO(new HashMap<>() {
+            {
+                put("id", userFirst.getId());
+            }
+
             {
                 put("email", "newEmail@example.com");
             }
         });
-        repository.save(mapper.toUser(userDTOFirst, State.ACTIVE));
+
+        log.info(repository.findAll().toString());
 
         //when
-        facade.updateUser(userDTOSecond.getId(), userDTOSecond);
+        facade.updateUser(userFirst.getId(), userDTOSecond);
 
         //then
-        final var foundedUser = repository.findByEmail(userDTOSecond.getEmail()).orElseThrow(() -> {
+        final User foundedUser = repository.findByEmail(userDTOSecond.getEmail()).orElseThrow(() -> {
             throw new RestException(ExceptionEnum.USER_NOT_FOUND);
         });
         Assertions.assertEquals(userDTOSecond.getEmail(), foundedUser.getEmail());
@@ -97,31 +120,24 @@ class UserFacadeTest {
     void updateUserTest_throwException_whenUserNotFound() {
         //given
         final UserDTO userDTOFirst = UserUtil.mockUserDTO(new HashMap<>());
-        final var secondUserId = UUID.randomUUID();
+        repository.save(mapper.toUser(userDTOFirst, State.ACTIVE));
         final UserDTO userDTOSecond = UserUtil.mockUserDTO(new HashMap<>() {
-            {
-                put("id", secondUserId);
-            }
 
             {
                 put("email", "newEmail@example.com");
             }
         });
+        final User userSecond = repository.save(mapper.toUser(userDTOSecond, State.ACTIVE));
+        final UUID userIdSecond = userSecond.getId();
         final UserDTO userDTOUpdateRequest = UserUtil.mockUserDTO(new HashMap<>() {
             {
-                put("id", secondUserId);
-            }
-
-            {
-                put("email", "email@example.com");
+                put("id", userIdSecond);
             }
         });
-        repository.save(mapper.toUser(userDTOFirst, State.ACTIVE));
-        repository.save(mapper.toUser(userDTOSecond, State.ACTIVE));
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> facade.updateUser(secondUserId, userDTOUpdateRequest));
+                () -> facade.updateUser(userIdSecond, userDTOUpdateRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_EXISTS.getMessage(), exception.getMessage());
@@ -131,13 +147,17 @@ class UserFacadeTest {
     void updateUserTest_throwException_whenUserIsNotActive() {
         //given
         final UserDTO userDTOFirst = UserUtil.mockUserDTO(new HashMap<>());
-        final UUID secondUserId = userDTOFirst.getId();
+        final User userFirst = repository.save(mapper.toUser(userDTOFirst, State.INACTIVE));
+        final UUID secondUserId = userFirst.getId();
         final UserDTO userDTOSecond = UserUtil.mockUserDTO(new HashMap<>() {
+            {
+                put("id", secondUserId);
+            }
+
             {
                 put("email", "newEmail@example.com");
             }
         });
-        repository.save(mapper.toUser(userDTOFirst, State.INACTIVE));
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,

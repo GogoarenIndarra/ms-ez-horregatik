@@ -26,6 +26,8 @@
 		<project.lombok.version>1.18.24</project.lombok.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 		<springdoc-openapi-ui.version>1.6.8</springdoc-openapi-ui.version>
+
+		<jacoco.version>0.8.8</jacoco.version>
 	</properties>
 
 	<dependencies>
@@ -33,34 +35,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-to-slf4j</artifactId>-->
-<!--				</exclusion>-->
-
-<!--				<exclusion>-->
-<!--					<groupId>ch.qos.logback</groupId>-->
-<!--					<artifactId>logback-classic</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
 		</dependency>
 
 		<!-- Spring framework validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-to-slf4j</artifactId>-->
-<!--				</exclusion>-->
-
-<!--				<exclusion>-->
-<!--					<groupId>ch.qos.logback</groupId>-->
-<!--					<artifactId>logback-classic</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
 		</dependency>
 
 		<!-- Spring framework security -->
@@ -68,17 +48,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring-parent.version}</version>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-to-slf4j</artifactId>-->
-<!--				</exclusion>-->
+		</dependency>
 
-<!--				<exclusion>-->
-<!--					<groupId>ch.qos.logback</groupId>-->
-<!--					<artifactId>logback-classic</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
+		<!-- jsonwebtoken/jjwt -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
 		</dependency>
 
 		<!-- Lombok -->
@@ -93,17 +69,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-to-slf4j</artifactId>-->
-<!--				</exclusion>-->
-
-<!--				<exclusion>-->
-<!--					<groupId>ch.qos.logback</groupId>-->
-<!--					<artifactId>logback-classic</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
 		</dependency>
 
 		<dependency>
@@ -165,6 +130,20 @@
 			<version>1.5.2.Final</version>
 		</dependency>
 
+		<!-- google guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>31.1-jre</version>
+		</dependency>
+
+		<!-- password validator -->
+		<dependency>
+			<groupId>org.passay</groupId>
+			<artifactId>passay</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -188,6 +167,68 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+
+			<!-- jacoco -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<configuration>
+					<rules>
+						<rule>
+							<limits>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>INSTRUCTION</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>BRANCH</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>COMPLEXITY</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>LINE</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>METHOD</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+								<limit implementation="org.jacoco.report.check.Limit">
+									<counter>CLASS</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+							</limits>
+						</rule>
+					</rules>
+					<excludes>
+						<!-- packages -->
+						<exclude>com/jablonski/msezhorregatik/*/exception*/*</exclude>
+						<exclude>com/jablonski/msezhorregatik/*/infrastructure/*</exclude>
+						<exclude>com/jablonski/msezhorregatik/*/dto/*</exclude>
+						<!-- classes -->
+						<exclude>com/jablonski/msezhorregatik/**/*Application.class</exclude>
+					</excludes>
+					<haltOnFailure>false</haltOnFailure>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
