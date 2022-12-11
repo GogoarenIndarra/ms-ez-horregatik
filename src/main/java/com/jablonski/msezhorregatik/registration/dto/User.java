@@ -1,7 +1,6 @@
 package com.jablonski.msezhorregatik.registration.dto;
 
 import com.jablonski.msezhorregatik.infrastructure.ValidEmail;
-import com.jablonski.msezhorregatik.infrastructure.ValidPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,8 +28,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Table(
-        name = "users",
-        indexes = {@Index(name = "users_email_idx", columnList = "email")}
+    name = "users",
+    indexes = {@Index(name = "users_email_idx", columnList = "email")}
 )
 @Entity
 @EntityListeners({AuditingEntityListener.class})
@@ -53,7 +52,6 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @ValidPassword
     @Column(name = "password")
     private String password;
 
@@ -71,8 +69,12 @@ public class User {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof final User user)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final User user)) {
+            return false;
+        }
         return Objects.equals(id, user.id);
     }
 

@@ -28,16 +28,16 @@ class JwtTokenUtil implements Serializable {
 
     String generateToken(final UserDetails userDetails) {
         return Jwts.builder()
-                .setClaims(new HashMap<>())
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(currentTimeMillis()))
-                .setExpiration(new Date(currentTimeMillis() + jwtTokenValidity * 3600 * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+            .setClaims(new HashMap<>())
+            .setSubject(userDetails.getUsername())
+            .setIssuedAt(new Date(currentTimeMillis()))
+            .setExpiration(new Date(currentTimeMillis() + jwtTokenValidity * 3600 * 1000))
+            .signWith(SignatureAlgorithm.HS512, secret)
+            .compact();
     }
 
     Boolean validateToken(final String token, final UserDetails userDetails) {
-        return (getUsernameFromToken(token).equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return getUsernameFromToken(token).equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     String getUsernameFromToken(final String token) {
@@ -50,9 +50,9 @@ class JwtTokenUtil implements Serializable {
 
     private <T> T getClaimFromToken(final String token, final Function<Claims, T> claimsResolver) {
         return claimsResolver.apply(
-                Jwts.parser()
-                        .setSigningKey(secret)
-                        .parseClaimsJws(token)
-                        .getBody());
+            Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody());
     }
 }

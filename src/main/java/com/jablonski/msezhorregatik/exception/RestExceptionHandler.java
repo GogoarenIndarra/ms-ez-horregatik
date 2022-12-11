@@ -9,10 +9,9 @@ class RestExceptionHandler {
 
     @ExceptionHandler(RestException.class)
     ResponseEntity<ExceptionResponse> restExceptionHandler(final RestException exception) {
-
         return new ResponseEntity<>(ExceptionResponse.builder()
-                .message(exception.getMessage())
-                .status(exception.getExceptionEnum().getHttpStatus().value()).build(),
-                exception.getExceptionEnum().getHttpStatus());
+            .message(exception.getMessage())
+            .status(exception.getExceptionEnum().getHttpStatus().value()).build(),
+            exception.getExceptionEnum().getHttpStatus());
     }
 }

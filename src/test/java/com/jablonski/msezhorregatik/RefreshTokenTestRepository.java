@@ -7,20 +7,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class RefreshTokenTestRepository
-        extends InMemoryRepository<RefreshToken, UUID>
-        implements RefreshTokenRepository {
+    extends InMemoryRepository<RefreshToken, UUID>
+    implements RefreshTokenRepository {
 
     @Override
     public Optional<RefreshToken> findByToken(String token) {
         return database.values().stream()
-                .filter(t -> t.getToken().equals(token))
-                .findFirst();
+            .filter(t -> t.getToken().equals(token))
+            .findFirst();
     }
 
     @Override
     public Optional<RefreshToken> findByUserId(UUID userId) {
         return database.values().stream()
-                .filter(t -> t.getUser().getId().equals(userId))
-                .findFirst();
+            .filter(t -> t.getUser().getId().equals(userId))
+            .findFirst();
     }
 }

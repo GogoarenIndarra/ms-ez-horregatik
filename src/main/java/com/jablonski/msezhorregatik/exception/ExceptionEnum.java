@@ -16,7 +16,7 @@ public enum ExceptionEnum {
     private final String message;
     private final HttpStatus httpStatus;
 
-    ExceptionEnum(HttpStatus httpStatus, String message) {
+    ExceptionEnum(final HttpStatus httpStatus, final String message) {
         this.httpStatus = httpStatus;
         this.message = message;
     }
