@@ -2,11 +2,11 @@ package com.jablonski.msezhorregatik.registration;
 
 import com.jablonski.msezhorregatik.UserTestRepository;
 import com.jablonski.msezhorregatik.UserUtil;
+import com.jablonski.msezhorregatik.exception.ExceptionEnum;
+import com.jablonski.msezhorregatik.exception.RestException;
 import com.jablonski.msezhorregatik.registration.dto.State;
 import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.registration.dto.UserDTO;
-import com.jablonski.msezhorregatik.exception.ExceptionEnum;
-import com.jablonski.msezhorregatik.exception.RestException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ class UserFacadeTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> facade.createUser(userDTO));
+            () -> facade.createUser(userDTO));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_EXISTS.getMessage(), exception.getMessage());
@@ -83,7 +83,7 @@ class UserFacadeTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> facade.getUser(userId));
+            () -> facade.getUser(userId));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_NOT_FOUND.getMessage(), exception.getMessage());
@@ -137,7 +137,7 @@ class UserFacadeTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> facade.updateUser(userIdSecond, userDTOUpdateRequest));
+            () -> facade.updateUser(userIdSecond, userDTOUpdateRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_EXISTS.getMessage(), exception.getMessage());
@@ -161,7 +161,7 @@ class UserFacadeTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> facade.updateUser(secondUserId, userDTOSecond));
+            () -> facade.updateUser(secondUserId, userDTOSecond));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_NOT_FOUND.getMessage(), exception.getMessage());

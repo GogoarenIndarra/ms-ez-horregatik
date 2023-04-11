@@ -28,6 +28,15 @@
 		<springdoc-openapi-ui.version>1.6.8</springdoc-openapi-ui.version>
 
 		<jacoco.version>0.8.8</jacoco.version>
+
+		<checkstyle.version>10.2</checkstyle.version>
+		<checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+
+		<spotbugs.version>4.7.0</spotbugs.version>
+		<spotbugs.plugin.version>4.6.0.0</spotbugs.plugin.version>
+
+		<pmd.version>6.45.0</pmd.version>
+		<pmd.plugin.version>3.16.0</pmd.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -107,13 +116,6 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-		</dependency>
-
-		<!-- Swagger -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>${springdoc-openapi-ui.version}</version>
 		</dependency>
 
 		<!-- Apache commons -->
@@ -219,7 +221,7 @@
 						<!-- classes -->
 						<exclude>com/jablonski/msezhorregatik/**/*Application.class</exclude>
 					</excludes>
-					<haltOnFailure>false</haltOnFailure>
+					<haltOnFailure>true</haltOnFailure>
 				</configuration>
 				<executions>
 					<execution>
@@ -230,6 +232,102 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${checkstyle.plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>${checkstyle.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<configLocation>${project.basedir}/src/main/resources/plugins/checkstyle.xml</configLocation>
+					<encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<linkXRef>false</linkXRef>
+				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- spotbugs -->
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>${spotbugs.plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs</artifactId>
+						<version>${spotbugs.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includeFilterFile>${project.basedir}/src/main/resources/plugins/spotbugs-include.xml</includeFilterFile>
+					<excludeFilterFile>${project.basedir}/src/main/resources/plugins/spotbugs-exclude.xml</excludeFilterFile>
+					<effort>Max</effort>
+					<threshold>Max</threshold>
+					<xmlOutput>true</xmlOutput>
+					<failOnError>true</failOnError>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- pmd -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${pmd.plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>net.sourceforge.pmd</groupId>
+						<artifactId>pmd</artifactId>
+						<version>${pmd.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>${maven.compiler.target}</targetJdk>
+					<linkXRef>false</linkXRef>
+					<verbose>true</verbose>
+					<failOnViolation>true</failOnViolation>
+					<excludes>
+						<exclude>**/generated/*.java</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+							<goal>cpd-check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 

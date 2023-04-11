@@ -1,8 +1,8 @@
 package com.jablonski.msezhorregatik.security;
 
-import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.exception.ExceptionEnum;
 import com.jablonski.msezhorregatik.exception.RestException;
+import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.security.dto.JwtRequest;
 import com.jablonski.msezhorregatik.security.dto.JwtResponse;
 import com.jablonski.msezhorregatik.security.dto.RefreshToken;
@@ -28,12 +28,12 @@ class JwtTokenServiceImpl implements JwtTokenService {
     private Long refreshTokenValidity;
     private final Clock clock;
 
-    public JwtTokenServiceImpl(AuthenticationManager authenticationManager,
-                               JwtUserDetailsService userDetailsService,
-                               JwtTokenUtil jwtTokenUtil,
-                               RefreshTokenRepository refreshTokenRepository,
-                               @Value("${jwt.refreshTokenValidity}") Long refreshTokenValidity,
-                               Clock clock) {
+    public JwtTokenServiceImpl(final AuthenticationManager authenticationManager,
+                               final JwtUserDetailsService userDetailsService,
+                               final JwtTokenUtil jwtTokenUtil,
+                               final RefreshTokenRepository refreshTokenRepository,
+                               final @Value("${jwt.refreshTokenValidity}") Long refreshTokenValidity,
+                               final Clock clock) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -46,7 +46,7 @@ class JwtTokenServiceImpl implements JwtTokenService {
     public JwtResponse createToken(final JwtRequest jwtRequest) {
         authenticate(jwtRequest.username(), jwtRequest.password());
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtRequest.username());
+            .loadUserByUsername(jwtRequest.username());
         final String token = jwtTokenUtil.generateToken(userDetails);
         final String refreshToken = createRefreshToken(userDetails.getUsername()).getToken();
 
@@ -57,9 +57,9 @@ class JwtTokenServiceImpl implements JwtTokenService {
     public JwtResponse refreshToken(final RefreshTokenRequest tokenRequest) {
         final String requestRefreshToken = tokenRequest.refreshToken();
         final RefreshToken refreshToken = refreshTokenRepository.findByToken(requestRefreshToken)
-                .orElseThrow(() -> {
-                    throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
-                });
+            .orElseThrow(() -> {
+                throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
+            });
         verifyExpiration(refreshToken);
         final UserDetails userDetails = userDetailsService.loadUserByUserId(refreshToken.getUser().getId());
         final String token = jwtTokenUtil.generateToken(userDetails);
@@ -71,14 +71,14 @@ class JwtTokenServiceImpl implements JwtTokenService {
     private RefreshToken createRefreshToken(final String userEmail) {
         final User user = userDetailsService.loadByUserEmail(userEmail);
         refreshTokenRepository.findByUserId(user.getId())
-                .ifPresent(refreshToken -> refreshTokenRepository.deleteById(refreshToken.getId()));
+            .ifPresent(refreshToken -> refreshTokenRepository.deleteById(refreshToken.getId()));
 
         return refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .token(UUID.randomUUID().toString())
-                        .expiryDate(LocalDateTime.now(clock).plus(refreshTokenValidity, ChronoUnit.MINUTES))
-                        .user(user)
-                        .build());
+            RefreshToken.builder()
+                .token(UUID.randomUUID().toString())
+                .expiryDate(LocalDateTime.now(clock).plus(refreshTokenValidity, ChronoUnit.MINUTES))
+                .user(user)
+                .build());
     }
 
     private void verifyExpiration(final RefreshToken token) {

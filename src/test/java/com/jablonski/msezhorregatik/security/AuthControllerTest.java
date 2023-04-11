@@ -4,10 +4,10 @@ import com.jablonski.msezhorregatik.AuthUtil;
 import com.jablonski.msezhorregatik.RefreshTokenTestRepository;
 import com.jablonski.msezhorregatik.UserTestRepository;
 import com.jablonski.msezhorregatik.UserUtil;
-import com.jablonski.msezhorregatik.registration.UserRepository;
-import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.exception.ExceptionEnum;
 import com.jablonski.msezhorregatik.exception.RestException;
+import com.jablonski.msezhorregatik.registration.UserRepository;
+import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.security.dto.JwtRequest;
 import com.jablonski.msezhorregatik.security.dto.JwtResponse;
 import com.jablonski.msezhorregatik.security.dto.RefreshToken;
@@ -45,12 +45,12 @@ class AuthControllerTest {
         Long refreshTokenValidity = 4L;
         Clock clock = mock(Clock.class);
         service = new JwtTokenServiceImpl(
-                authenticationManager,
-                userDetailsService,
-                jwtTokenUtil,
-                refreshTokenRepository,
-                refreshTokenValidity,
-                clock);
+            authenticationManager,
+            userDetailsService,
+            jwtTokenUtil,
+            refreshTokenRepository,
+            refreshTokenValidity,
+            clock);
 
         when(clock.getZone()).thenReturn(AuthUtil.NOW.getZone());
         when(clock.instant()).thenReturn(AuthUtil.NOW.toInstant());
@@ -65,13 +65,13 @@ class AuthControllerTest {
         userRepository.save(user);
         Mockito.when(jwtTokenUtil.generateToken(any())).thenReturn(newBearerToken);
         Mockito.when(authenticationManager.authenticate(any()))
-                .thenReturn(new UsernamePasswordAuthenticationToken("dummy", "dummy"));
+            .thenReturn(new UsernamePasswordAuthenticationToken("dummy", "dummy"));
 
         //when:
         final var response = service.createToken(jwtRequest);
         final var refToken = refreshTokenRepository.findByUserId(user.getId()).orElseThrow(() -> {
-                    throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
-                }
+                throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
+            }
         );
         final JwtResponse expectedResponse = new JwtResponse(newBearerToken, refToken.getToken());
 
@@ -84,11 +84,11 @@ class AuthControllerTest {
         //given:
         final JwtRequest jwtRequest = AuthUtil.mockJwtRequest(new HashMap<>());
         Mockito.doThrow(InternalAuthenticationServiceException.class)
-                .when(authenticationManager).authenticate(any());
+            .when(authenticationManager).authenticate(any());
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> service.createToken(jwtRequest));
+            () -> service.createToken(jwtRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.BAD_CREDENTIALS.getMessage(), exception.getMessage());
@@ -99,11 +99,11 @@ class AuthControllerTest {
         //given:
         final JwtRequest jwtRequest = AuthUtil.mockJwtRequest(new HashMap<>());
         Mockito.when(authenticationManager.authenticate(any()))
-                .thenReturn(new UsernamePasswordAuthenticationToken("dummy", "dummy"));
+            .thenReturn(new UsernamePasswordAuthenticationToken("dummy", "dummy"));
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> service.createToken(jwtRequest));
+            () -> service.createToken(jwtRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.BAD_CREDENTIALS.getMessage(), exception.getMessage());
@@ -123,8 +123,8 @@ class AuthControllerTest {
         //when:
         final var response = service.refreshToken(refreshTokenRequest);
         final var refToken = refreshTokenRepository.findByUserId(user.getId()).orElseThrow(() -> {
-                    throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
-                }
+                throw new RestException(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND);
+            }
         );
         final JwtResponse expectedResponse = new JwtResponse(newBearerToken, refToken.getToken());
 
@@ -139,7 +139,7 @@ class AuthControllerTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> service.refreshToken(refreshTokenRequest));
+            () -> service.refreshToken(refreshTokenRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.REFRESH_TOKEN_NOT_FOUND.getMessage(), exception.getMessage());
@@ -159,7 +159,7 @@ class AuthControllerTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> service.refreshToken(refreshTokenRequest));
+            () -> service.refreshToken(refreshTokenRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.REFRESH_TOKEN_EXPIRED.getMessage(), exception.getMessage());
@@ -174,7 +174,7 @@ class AuthControllerTest {
 
         //when
         final RestException exception = Assertions.assertThrows(RestException.class,
-                () -> service.refreshToken(refreshTokenRequest));
+            () -> service.refreshToken(refreshTokenRequest));
 
         //then
         Assertions.assertEquals(ExceptionEnum.USER_NOT_FOUND.getMessage(), exception.getMessage());

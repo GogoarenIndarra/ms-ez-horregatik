@@ -1,10 +1,10 @@
 package com.jablonski.msezhorregatik.registration;
 
+import com.jablonski.msezhorregatik.exception.ExceptionEnum;
+import com.jablonski.msezhorregatik.exception.RestException;
 import com.jablonski.msezhorregatik.registration.dto.State;
 import com.jablonski.msezhorregatik.registration.dto.User;
 import com.jablonski.msezhorregatik.registration.dto.UserDTO;
-import com.jablonski.msezhorregatik.exception.ExceptionEnum;
-import com.jablonski.msezhorregatik.exception.RestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,12 +46,12 @@ class UserService {
     void updateUser(final UUID userId, final UserDTO userDTO) {
         log.info("Updating user: {}", userDTO);
         final User user = repository.findById(userId)
-                .filter(user1 ->
-                        !State.INACTIVE.equals(user1.getState()))
-                .orElseThrow(() -> {
-                    log.error(USER_NOT_FOUND_FOR_ID_LOG, userId);
-                    throw new RestException(ExceptionEnum.USER_NOT_FOUND);
-                });
+            .filter(user1 ->
+                !State.INACTIVE.equals(user1.getState()))
+            .orElseThrow(() -> {
+                log.error(USER_NOT_FOUND_FOR_ID_LOG, userId);
+                throw new RestException(ExceptionEnum.USER_NOT_FOUND);
+            });
 
         mapper.updateUser(user, userDTO, State.ACTIVE);
         try {

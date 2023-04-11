@@ -1,7 +1,10 @@
 package com.jablonski.msezhorregatik.security.dto;
 
 import com.jablonski.msezhorregatik.registration.dto.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -40,8 +43,12 @@ public class RefreshToken {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof final RefreshToken refreshToken)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final RefreshToken refreshToken)) {
+            return false;
+        }
         return Objects.equals(id, refreshToken.id);
     }
 

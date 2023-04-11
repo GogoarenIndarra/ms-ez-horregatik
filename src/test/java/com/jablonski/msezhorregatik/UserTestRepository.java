@@ -8,13 +8,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class UserTestRepository
-        extends InMemoryRepository<User, UUID>
-        implements UserRepository {
+    extends InMemoryRepository<User, UUID>
+    implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
         return database.values().stream()
-                .filter(e -> e.getEmail().equals(email)).findFirst();
+            .filter(e -> e.getEmail().equals(email)).findFirst();
     }
 
     @Override
